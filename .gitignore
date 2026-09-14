@@ -13,6 +13,8 @@ target/
 .anchor/
 test-ledger/
 *.so
+**/*.rs.bk
+.yarn/
 
 # Env / secrets
 .env

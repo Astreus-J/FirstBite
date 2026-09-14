@@ -58,6 +58,29 @@ Documentados explicitamente em vez de escondidos, conforme o princípio anti-alu
 3. **Sponsor Service centralizado é um ponto único de operação** — se ficar sem saldo de COOK ou sair do ar, claims patrocinados param (o claim em si continua possível se o claimer tiver como pagar a própria fee, já que a instrução do programa não depende logicamente do sponsorship, só a UX "zero-balance" depende).
 4. **Nenhum mecanismo formal de auditoria externa** foi executado ainda sobre o programa Anchor — planejado para a Fase 18, antes de qualquer deploy considerado "final" para a submissão.
 
+## Resultado da Skill `solana-vulnerability-scanner` (M1.6, 2026-09-14)
+
+Aplicada sobre `programs/first_bite/src/` após a implementação de `create_bite`, `claim` e `cancel_bite`. Os 6 padrões cobertos pela Skill e o resultado de cada um:
+
+| Padrão | Resultado | Evidência |
+|---|---|---|
+| Arbitrary CPI | **OK** | Única CPI do programa é `system_program::transfer` em `create_bite.rs`, usando `system_program: Program<'info, System>` — Anchor valida o program ID automaticamente; não há CPI para programas arbitrários/controlados pelo cliente. |
+| Improper PDA Validation | **OK** | Todas as PDAs (`bite`, `claim_record`) usam `seeds = [...] + bump` do Anchor — `bump,` (calcula e guarda o bump canônico no `init`) ou `bump = bite.bump` (reusa o bump já persistido). Nenhum bump vem do cliente sem validação. |
+| Missing Ownership Check | **OK** | Toda conta de estado é tipada `Account<'info, Bite>` / `Account<'info, ClaimRecord>` — o wrapper do Anchor valida owner e discriminator antes de desserializar. |
+| Missing Signer Check | **OK** | `creator`, `claimer` e `payer` são `Signer<'info>` em todas as instruções que exigem autorização; `cancel_bite` adiciona `constraint = bite.creator == creator.key() @ FirstBiteError::Unauthorized` (ver T11). |
+| Sysvar Account Check | **N/A — seguro por construção** | O programa nunca aceita `Rent`/`Clock` como conta de instrução; usa exclusivamente `Rent::get()?` / `Clock::get()?` (syscall direto), eliminando de vez a classe de ataque de sysvar spoofado. |
+| Improper Instruction Introspection | **N/A** | O programa não usa introspecção de instruções (`load_instruction_at` etc.). |
+
+**Nenhum finding.** Isso cobre vulnerabilidades genéricas da plataforma SVM — as ameaças específicas do FirstBite (Sybil, rate limiting, drain do sponsor, replay a nível de aplicação) continuam sendo as ameaças T1–T15 mapeadas acima, que são de lógica de produto/backend, não de padrão on-chain genérico, e são cobertas pelos testes de integração em `tests/first_bite.ts`, não por este scanner.
+
+## Mapeamento de entry points (M1.6)
+
+| Instrução | Acesso | Muda estado? | Superfície de risco |
+|---|---|---|---|
+| `create_bite` | Público (qualquer signer com saldo) | Sim — cria `Bite`, transfere depósito | Cobertas: T9 (overflow no cálculo do total), amount abaixo do rent-exempt |
+| `claim` | Público (qualquer signer) | Sim — cria `ClaimRecord`, transfere `amount_per_claim`, incrementa `claimed_count` | Cobertas: T3/T4 (replay/duplicate via `init` do `ClaimRecord`), T7 (expiração), T9 (overflow) |
+| `cancel_bite` | Restrito ao `creator` original | Sim — fecha `Bite`, devolve saldo | Coberta: T11 (autorização) |
+
 ## Próximos passos
 
 - Validar T1–T4, T7–T11 com testes de integração automatizados (Fase 17) que tentem ativamente cada ataque (ex.: tentar claim duplicado, tentar cancelar como não-creator, tentar claim de Bite expirado) — não depender só de leitura de código.
