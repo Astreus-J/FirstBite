@@ -2,18 +2,20 @@ import Link from "next/link";
 
 export function Nav() {
   return (
-    <nav className="flex items-center justify-between border-b border-neutral-200 px-6 py-3 dark:border-neutral-800">
-      <Link href="/" className="font-bold">
-        FirstBite 🍪
-      </Link>
-      <div className="flex gap-4 text-sm text-neutral-600 dark:text-neutral-300">
-        <Link href="/create" className="hover:underline">
-          Create
+    <header className="sticky top-0 z-10 border-b border-border bg-bg/80 backdrop-blur-sm">
+      <nav className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+        <Link href="/" className="text-lg font-semibold tracking-tight text-ink">
+          FirstBite <span aria-hidden>🍪</span>
         </Link>
-        <Link href="/history" className="hover:underline">
-          Your Bites
-        </Link>
-      </div>
-    </nav>
+        <div className="flex items-center gap-5 text-sm font-medium text-muted">
+          <Link href="/create" className="transition-colors hover:text-ink">
+            Create
+          </Link>
+          <Link href="/history" className="transition-colors hover:text-ink">
+            Your Bites
+          </Link>
+        </div>
+      </nav>
+    </header>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { PublicKey } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { WalletButton } from "@/app/WalletButton";
 import { useFirstBiteProgram } from "@/lib/program/useFirstBiteProgram";
 import { lamportsToCook } from "@/lib/program/units";
 import { friendlyError } from "@/lib/tx-status";
@@ -70,12 +71,10 @@ export default function HistoryPage() {
 
   if (!connected) {
     return (
-      <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
+      <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-16 text-center">
         <h1 className="text-3xl font-bold">Your Bites</h1>
-        <p className="max-w-sm text-neutral-600 dark:text-neutral-300">
-          Connect your wallet to see the Bites you&apos;ve created.
-        </p>
-        <WalletMultiButton />
+        <p className="max-w-sm text-muted">Connect your wallet to see the Bites you&apos;ve created.</p>
+        <WalletButton />
       </main>
     );
   }
@@ -84,39 +83,58 @@ export default function HistoryPage() {
     <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-6 py-12">
       <h1 className="text-center text-3xl font-bold">Your Bites</h1>
 
-      {error && <p className="text-center text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="text-center text-sm text-error">{error}</p>}
 
       {bites === null ? (
-        <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">Loading…</p>
+        <div className="flex flex-col gap-3">
+          {[0, 1].map((i) => (
+            <div key={i} className="h-16 animate-pulse rounded-xl bg-surface" />
+          ))}
+        </div>
       ) : bites.length === 0 ? (
-        <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
-          You haven&apos;t created any Bites yet.
-        </p>
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-12 text-center">
+          <p className="text-muted">You haven&apos;t created any Bites yet.</p>
+          <Link
+            href="/create"
+            className="text-sm font-medium text-accent underline underline-offset-2 transition hover:opacity-80"
+          >
+            Create your first Bite →
+          </Link>
+        </div>
       ) : (
         <ul className="flex flex-col gap-3">
           {bites.map((bite) => {
             const remaining = bite.maxClaims - bite.claimedCount;
+            const isCancelling = cancellingId === bite.publicKey.toBase58();
             return (
               <li
                 key={bite.publicKey.toBase58()}
-                className="flex items-center justify-between rounded-xl border border-neutral-200 px-4 py-3 dark:border-neutral-800"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3"
               >
                 <div>
-                  <p className="font-medium">{lamportsToCook(bite.amountPerClaim)} COOK per claim</p>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium text-ink">{lamportsToCook(bite.amountPerClaim)} COOK per claim</p>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        bite.status === "active" ? "bg-accent text-accent-ink" : "bg-border text-muted"
+                      }`}
+                    >
+                      {bite.status === "active" ? "Active" : "Depleted"}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-sm text-muted">
                     {bite.claimedCount} of {bite.maxClaims} claimed
-                    {bite.status === "depleted" ? " — depleted" : ""}
                   </p>
                 </div>
-                {remaining > 0 || bite.status === "depleted" ? (
+                {(remaining > 0 || bite.status === "depleted") && (
                   <button
                     onClick={() => handleCancel(bite.publicKey)}
-                    disabled={cancellingId === bite.publicKey.toBase58()}
-                    className="text-sm text-red-600 underline disabled:opacity-50 dark:text-red-400"
+                    disabled={isCancelling}
+                    className="rounded-full border border-error px-3 py-1.5 text-sm font-medium text-error transition hover:bg-error hover:text-error-ink disabled:opacity-50"
                   >
-                    {cancellingId === bite.publicKey.toBase58() ? "Cancelling…" : "Cancel & reclaim"}
+                    {isCancelling ? "Cancelling…" : "Cancel & reclaim"}
                   </button>
-                ) : null}
+                )}
               </li>
             );
           })}
