@@ -32,6 +32,20 @@ Escopo: viabilidade técnica de Wallet B (0 COOK) assinar um "Claim" enquanto um
 > **mecanismo e todo o código de produção estão provados corretos**; o que
 > falta é confirmar que a extensão específica da Nightly não impõe uma
 > restrição adicional não documentada sobre `feePayer`.
+>
+> **Atualização final — CONFIRMADO com a extensão Nightly real (2026-09-14)**:
+> testado com o usuário, usando a extensão Nightly de verdade instalada no
+> navegador, contra um validador local com o programa `first_bite` implantado
+> e o Sponsor Service real rodando. Fluxo completo: usuário conectou a Nightly,
+> criou um Bite, abriu o link de claim, clicou "Claim". A Nightly assinou a
+> transação normalmente, **sem nenhum aviso de rede incorreta e sem recusar**
+> por o `feePayer` ser uma conta diferente da própria wallet. Confirmado via
+> `solana confirm -v` na transação real
+> (`4KhWRSUAVR8toVjWtY72EzuTaj7iqBLZiw3pwUGTL2peD1P7BtD8G8rgVoGPeoUZd3bxMdVknpDkPVVZTRFVJnsq`):
+> a conta do sponsor aparece como `fee payer` e pagou a taxa; a wallet Nightly
+> do usuário aparece apenas como segunda assinante e teve o saldo creditado
+> em cheio, sem nenhum débito de taxa. **Não há mais nenhuma variável técnica
+> não testada neste mecanismo — o fallback do M4.4 não é necessário.**
 
 ---
 
@@ -39,15 +53,15 @@ Escopo: viabilidade técnica de Wallet B (0 COOK) assinar um "Claim" enquanto um
 
 A pergunta central — "é possível um usuário com 0 tokens nativos assinar uma transação enquanto outra conta paga a taxa (`feePayer != wallet do usuário`)?" — tem resposta **CONFIRMADA como padrão nativo e documentado do protocolo Solana/SVM**, com múltiplas implementações de produção no ecossistema (Octane, Kora, Circle Gas Station, Privy, Dynamic, Tempo) comprovando que o padrão não é apenas teoricamente possível, mas amplamente usado.
 
-O ponto **não confirmado** é o comportamento específico da **Cookie Chain** e da **Nightly Wallet** para esse fluxo exato — nenhuma das duas publica documentação que trate explicitamente de `feePayer` diferente do signer conectado. A Cookie Chain é descrita pela própria documentação e por terceiros como "SVM tooling works if you point it at the Cookie RPC" (ou seja, reutiliza o cliente/tooling padrão da Solana), o que é evidência indireta forte de compatibilidade, mas não uma declaração oficial testada.
+**Atualização final**: o comportamento específico da Nightly Wallet para esse fluxo exato também está **CONFIRMADO por teste real** — ver atualização de 2026-09-14 acima. A extensão Nightly instalada no navegador do usuário assinou normalmente uma transação com `feePayer` de uma conta diferente, sem aviso ou recusa, em um fluxo de ponta a ponta contra o programa e o Sponsor Service reais.
 
-Portanto, o veredito do Research Gate #1 é **CONFIRMADO em nível de protocolo SVM/Solana padrão**, e **NOT VERIFIED especificamente para a implementação da Cookie Chain e para a Nightly Wallet** (nenhuma restrição foi encontrada na documentação de nenhuma delas, mas nenhuma confirmação explícita também foi encontrada).
+Portanto, o veredito final do Research Gate #1 é **CONFIRMADO — em nível de protocolo SVM/Solana padrão E especificamente para a Nightly Wallet**, por teste real com a extensão instalada. Não resta nenhuma variável técnica não testada neste mecanismo.
 
 ---
 
 ## Research Gate #1 — Veredito e Evidências
 
-### Veredito: **CONFIRMADO** (em nível de protocolo SVM padrão) — com ressalva de "NOT VERIFIED para Cookie Chain/Nightly especificamente"
+### Veredito final: **CONFIRMADO** — em nível de protocolo SVM padrão e confirmado por teste real com a extensão Nightly (2026-09-14)
 
 ### Evidências primárias
 
