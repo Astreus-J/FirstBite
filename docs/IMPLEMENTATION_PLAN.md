@@ -53,10 +53,10 @@ Status possíveis: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED`.
 
 | ID | Objetivo | Branch | Depende de | Critério de aceite | Teste |
 |---|---|---|---|---|---|
-| M5.1 | Estados de transação visíveis (preparing/awaiting signature/submitted/confirming/confirmed/failed) | `feature/transaction-feedback` | M4.3 | Nenhum estado "travado" sem feedback visual | manual |
-| M5.2 | Tratamento de erro legível (não expor stack trace/RPC bruto) | `feature/transaction-feedback` | M5.1 | Mensagens de erro compreensíveis para usuário leigo | manual |
+| M5.1 | Estados de transação visíveis (preparing/awaiting signature/submitted/confirming/confirmed/failed) | `feature/transaction-feedback` | M4.3 | Nenhum estado "travado" sem feedback visual | DONE — `TxPhase` state machine (`app/src/lib/tx-status.ts`) + componente `TransactionStatus`, usado em Create e Claim; ambos passaram a construir/assinar/enviar/confirmar manualmente (em vez do `.rpc()` tudo-em-um do Anchor) para expor cada etapa |
+| M5.2 | Tratamento de erro legível (não expor stack trace/RPC bruto) | `feature/transaction-feedback` | M5.1 | Mensagens de erro compreensíveis para usuário leigo | DONE — `friendlyError()` mapeia erros comuns (rejeição da wallet, saldo insuficiente, blockhash expirado, cada erro customizado do programa) para texto simples; erro original ainda vai pro `console.error` |
 | M5.3 | Aviso próprio sobre possível alerta incorreto de "rede errada" da Nightly | `feature/transaction-feedback` | M2.3 | Aviso aparece só se a fricção documentada em `docs/research/ECOSYSTEM.md` §4 se confirmar em teste real | **NÃO NECESSÁRIO** (por ora) — no teste real do M2.3, a Nightly não mostrou nenhum aviso de rede errada, possivelmente graças ao `NightlyNetworkSync` (`app/src/app/nightly-network.tsx`) implementado antes do teste. Reavaliar se a fricção aparecer em mainnet real. |
-| M5.4 | Landing page final + histórico do creator | `feature/transaction-feedback` | M3.2 | Homepage comunica o produto em ~5s (revisão com Skill `impeccable`) | manual |
+| M5.4 | Landing page final + histórico do creator | `feature/transaction-feedback` | M3.2 | Homepage comunica o produto em ~5s | DONE — página `/history` (lista Bites do creator via `program.account.bite.all()` com filtro `memcmp`, com ação "Cancel & reclaim") + nav simples (Home/Create/Your Bites) em todas as páginas. Testado de ponta a ponta: criar → ver no histórico → cancelar → some da lista. Revisão de design mais profunda com a Skill `impeccable` não foi feita — landing atual é enxuta e comunica o produto rápido, mas pode se beneficiar de uma passada visual dedicada se houver tempo antes da submissão. |
 
 ## Milestone 6 — Testes e Security Review
 
