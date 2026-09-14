@@ -62,9 +62,9 @@ Status possíveis: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED`.
 
 | ID | Objetivo | Branch | Depende de | Critério de aceite | Teste |
 |---|---|---|---|---|---|
-| M6.1 | Cobertura de testes completa do programa (todas as ameaças T1–T15 de `docs/SECURITY.md` com teste correspondente onde aplicável on-chain) | `release/v1.0.0` | M1.x | Suite `anchor test` verde | CI |
-| M6.2 | Segunda revisão de segurança com contexto limpo (subagent/Skill separado) | `release/v1.0.0` | M6.1 | Nenhum finding crítico sem mitigação | `solana-vulnerability-scanner` + `security-review` |
-| M6.3 | CI GitHub Actions (lint, typecheck, build frontend; fmt, clippy, `anchor test` para o programa) | `release/v1.0.0` | M6.1 | Pipeline verde em PR | CI |
+| M6.1 | Cobertura de testes completa do programa (todas as ameaças T1–T15 de `docs/SECURITY.md` com teste correspondente onde aplicável on-chain) | `release/v1.0.0` | M1.x | Suite `anchor test` verde | DONE — 11/11 testes, incluindo os dois gaps achados nesta fase: T8 (claim após cancelamento) e T9 (overflow aritmético em `create_bite`) |
+| M6.2 | Segunda revisão de segurança com contexto limpo (subagent/Skill separado) | `release/v1.0.0` | M6.1 | Nenhum finding crítico sem mitigação | DONE — agente independente revisou programa + Sponsor Service; nenhum finding Critical. 1 High (H1: rate limit por IP documentado mas não implementado) e 1 Medium (M2: `Map` de rate limit sem limite de tamanho) corrigidos; 1 Medium (M1: corrida TOCTOU) documentado como risco aceito. Detalhes em `docs/SECURITY.md` §"Segunda revisão de segurança independente". |
+| M6.3 | CI GitHub Actions (lint, typecheck, build frontend; fmt, clippy, `anchor test` para o programa) | `release/v1.0.0` | M6.1 | Pipeline verde em PR | DONE — `.github/workflows/ci.yml`, dois jobs (`frontend`: lint/test/build; `program`: fmt/clippy/anchor test) |
 
 ## Milestone 7 — Deploy e Submissão
 

@@ -2,25 +2,12 @@ import { NextResponse } from "next/server";
 import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
 import { getSponsorProgram } from "@/lib/program/sponsor.server";
 import { claimRecordPda } from "@/lib/program/pda";
-
-// Minimal, in-memory, best-effort rate limiting for the MVP (docs/SECURITY.md
-// documents this as an accepted limitation, not a solved problem: it resets
-// on redeploy and doesn't share state across serverless instances). Its job
-// here is just to blunt naive repeated requests against the same Bite, not
-// to be a real defense against a determined attacker.
-const recentRequests = new Map<string, number[]>();
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX_REQUESTS = 10;
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const timestamps = (recentRequests.get(key) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-  timestamps.push(now);
-  recentRequests.set(key, timestamps);
-  return timestamps.length > RATE_LIMIT_MAX_REQUESTS;
-}
+import { biteRateLimiter, getClientIp, ipRateLimiter } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  if (ipRateLimiter.check(getClientIp(request))) {
+    return NextResponse.json({ error: "Too many requests. Try again shortly." }, { status: 429 });
+  }
   let body: unknown;
   try {
     body = await request.json();
@@ -42,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "bite or claimer is not a valid public key." }, { status: 400 });
   }
 
-  if (isRateLimited(bitePubkey.toBase58())) {
+  if (biteRateLimiter.check(bitePubkey.toBase58())) {
     return NextResponse.json({ error: "Too many requests for this Bite. Try again shortly." }, { status: 429 });
   }
 
