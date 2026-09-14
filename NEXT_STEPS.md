@@ -27,6 +27,7 @@ Estado em 2026-09-14. Checklist completo e mais detalhado em `docs/SUBMISSION.md
 - Programa Anchor implementado e testado (11/11 testes), revisado duas vezes por segurança (nenhuma vulnerabilidade crítica encontrada).
 - Frontend completo: criar Bite, reivindicar com taxa patrocinada, histórico do creator.
 - Mecanismo de sponsorship validado com a extensão Nightly real (não só simulado).
+- Design/UX revisado: paleta própria, hero, tela de claim com card que muda de cor ao confirmar, responsivo em mobile — testado sem erros de console.
 - CI configurado no GitHub Actions.
 - README, materiais de pitch (tagline, elevator pitch, 60s, 2min, FAQ para jurados) e rascunho da X thread escritos.
 - Repositório público no GitHub com todo o histórico de GitFlow: https://github.com/Astreus-J/FirstBite
