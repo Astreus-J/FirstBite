@@ -81,6 +81,18 @@ Aplicada sobre `programs/first_bite/src/` após a implementação de `create_bit
 | `claim` | Público (qualquer signer) | Sim — cria `ClaimRecord`, transfere `amount_per_claim`, incrementa `claimed_count` | Cobertas: T3/T4 (replay/duplicate via `init` do `ClaimRecord`), T7 (expiração), T9 (overflow) |
 | `cancel_bite` | Restrito ao `creator` original | Sim — fecha `Bite`, devolve saldo | Coberta: T11 (autorização) |
 
+## Implementação do Sponsor Service (M4.2, 2026-09-14)
+
+`app/src/app/api/claim/route.ts` implementa as mitigações acima na prática:
+
+- **T1/T2 (instrução maliciosa / parâmetro forjado)**: a rota nunca recebe nem assina uma transação vinda do cliente. Ela recebe apenas `{ bite, claimer }` (dois pubkeys), busca o `Bite` on-chain, e constrói a instrução `claim` inteiramente no servidor via `program.methods.claim().accountsPartial({...}).instruction()`. `amount` nunca é aceito do cliente — vem sempre do campo `amount_per_claim` lido on-chain.
+- **T3/T4 (replay/duplicate)**: a rota verifica preventivamente se a `ClaimRecord` PDA já existe antes de gastar uma assinatura do sponsor; a garantia real, porém, continua sendo a constraint `init` on-chain (a checagem aqui é só para dar um erro HTTP mais claro, não é a linha de defesa).
+- **T6/T15 (bot farming / rate limit)**: um limitador em memória, por `bite`, rejeita more que 10 requisições/minuto — documentado como proteção básica, não durável entre deploys/instâncias (mesma ressalva já registrada em "Riscos aceitos" abaixo).
+- **T7/T8 (expirado/depletado)**: checados contra o estado on-chain antes de gastar a assinatura do sponsor (defesa em profundidade — o programa também rejeita).
+- **T13 (vazamento de secret)**: a chave do sponsor só existe em `SPONSOR_SECRET_KEY` (variável de ambiente, nunca no repositório) e só é carregada em `sponsor.server.ts`, que importa `"server-only"` — qualquer tentativa de importar esse módulo de um Client Component quebra o build.
+
+Validado de ponta a ponta contra um `solana-test-validator` local com o programa real implantado: uma wallet com saldo genuinamente zero completou um claim pagando fee zero, com o sponsor confirmado como `fee payer` via `solana confirm -v`. Ver `docs/research/SPONSORSHIP.md` para os detalhes completos.
+
 ## Próximos passos
 
 - Validar T1–T4, T7–T11 com testes de integração automatizados (Fase 17) que tentem ativamente cada ataque (ex.: tentar claim duplicado, tentar cancelar como não-creator, tentar claim de Bite expirado) — não depender só de leitura de código.
