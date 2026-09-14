@@ -145,7 +145,7 @@ Beyond the hackathon MVP (see `docs/PRODUCT.md` for the full MoSCoW breakdown):
 
 ## Hackathon
 
-Built for [Create an App on Cookie Chain](https://superteam.fun/earn/listing/create-an-app-on-cookie-chain-app) (Superteam Earn, sponsored by Cookie Chain). Research, architecture decisions, competitive analysis, and the full milestone-by-milestone build log live in `docs/`.
+Built for [Create an App on Cookie Chain](https://superteam.fun/earn/listing/create-an-app-on-cookie-chain-app) (Superteam Earn, sponsored by Cookie Chain). Repository: [github.com/Astreus-J/FirstBite](https://github.com/Astreus-J/FirstBite). Research, architecture decisions, competitive analysis, and the full milestone-by-milestone build log live in `docs/`.
 
 ## License
 

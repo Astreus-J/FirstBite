@@ -4,13 +4,27 @@ Baseado nos requisitos confirmados em `docs/research/HACKATHON.md`. **Reler o li
 
 Status: `PASS` / `FAIL` / `NOT APPLICABLE` / `PENDING` (a preencher conforme a implementação avança).
 
+## O que falta para terminar, em ordem (2026-09-14)
+
+1. **[BLOQUEADOR ATIVO] Conseguir COOK para deploy** — sem fundos reais, nada abaixo disso é possível. Caminho em andamento: pedir ao time da Cookie Chain via Discord (`discord.gg/dP6EjZeSJW`) ou Telegram (`@TheCookieNetChain`), seguindo o precedente documentado de outro projeto do bounty. Custo real necessário: rent-exemption do programa (~1,5 COOK, medido localmente) + saldo para o sponsor pagar taxas de claim na demo.
+2. **Deploy do programa na Cookie Chain mainnet** (M7.1) — `anchor deploy` contra `rpc.cookiescan.io`, assim que houver fundos. Depois: rodar `anchor keys sync` só se o program ID mudar, e **atualizar o `SPONSOR_SECRET_KEY`** para uma chave real financiada (nunca reusar as chaves de teste geradas nesta sessão).
+3. **Deploy do frontend** (M7.2) — Vercel (ou similar), com `NEXT_PUBLIC_COOKIE_CHAIN_RPC` e `SPONSOR_SECRET_KEY` configurados como variáveis de ambiente de produção.
+4. **Teste manual completo na mainnet real** — repetir o fluxo criar→reivindicar com a Nightly real, agora contra a Cookie Chain de verdade (já validamos o mecanismo localmente e com a extensão real contra validador local; falta só a confirmação final no ambiente de produção).
+5. **Atualizar `README.md`** com o Program Address real, a URL da aplicação ao vivo, e um link de transação real no CookieScan.
+6. **Preencher `apps.json`** (fork do repo oficial `cookiechain/superteam-hackathon-submissions`, PR) — falta o logo 512×512 e screenshots (único item de mídia ainda pendente).
+7. **Submissão oficial** — botão "Submit Now" no listing da Superteam Earn **e** o PR no GitHub (os dois, não só um).
+8. **Publicar a X thread** (`docs/X_THREAD.md`) — falta gravar o GIF/vídeo do fluxo completo e preencher os links reais.
+9. **Reler o bounty do zero** no dia da submissão (regras podem ter mudado desde 2026-09-14).
+
+Tudo o que **não** depende de fundos já está pronto: programa testado (11/11) e revisado duas vezes por segurança, frontend completo e testado (inclusive com a Nightly real contra validador local), CI configurado, README/pitch/FAQ/X thread escritos, repositório público no GitHub com todo o histórico de GitFlow.
+
 ## Requisitos obrigatórios (confirmados em `cookiechain/superteam-hackathon-submissions`)
 
 | Requisito | Status | Nota |
 |---|---|---|
 | App roda na Cookie Chain (mainnet ou testnet claramente documentado) | PENDING | Depende de M7.1 (deploy do programa) |
 | URL pública funcional (não basta o repositório) | PENDING | Depende de M7.2 |
-| Código-fonte real no GitHub, com commits do período do hackathon | IN PROGRESS | Este repositório, desde 2026-09-14 |
+| Código-fonte real no GitHub, com commits do período do hackathon | DONE | https://github.com/Astreus-J/FirstBite (público, todas as branches do GitFlow publicadas, histórico completo desde 2026-09-14) |
 | "Ship something usable, not a landing page or a mockup" | PENDING | Depende do fluxo de claim end-to-end (M4.3) funcionar de verdade |
 | Entrada em `apps.json` com `id`, `title`, `shortDescription`, `description`, `category`, `tags`, `links.website`, `links.github`, `media.logo` (512×512), `team[].name` | PENDING | Preencher no PR de submissão (M7.4) |
 | Mídia hospedada via `raw.githubusercontent.com` dentro do próprio repositório da submissão (não Imgur/IPFS/host próprio) | PENDING | Atenção na hora de montar o PR |
