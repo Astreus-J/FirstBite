@@ -51,7 +51,7 @@ export default function CreateBitePage() {
 
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
-    if (!program || !publicKey || validationError) return;
+    if (!publicKey || validationError) return;
 
     setStatus("submitting");
     setErrorMessage(null);
@@ -193,7 +193,7 @@ export default function CreateBitePage() {
 
         <button
           type="submit"
-          disabled={!!validationError || status === "submitting" || !program}
+          disabled={!!validationError || status === "submitting"}
           className="rounded-full bg-purple-700 px-4 py-2 font-medium text-white transition hover:opacity-90 disabled:opacity-50"
         >
           {status === "submitting" ? "Preparing transaction…" : "Deposit & create Bite"}
