@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey, Transaction } from "@solana/web3.js";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useFirstBiteProgram } from "@/lib/program/useFirstBiteProgram";
 import { claimRecordPda } from "@/lib/program/pda";
@@ -28,7 +28,8 @@ type ClaimState = "idle" | "claiming" | "confirmed" | "error";
 
 export default function ClaimPage() {
   const params = useParams<{ biteAddress: string }>();
-  const { publicKey, connected } = useWallet();
+  const { publicKey, connected, signTransaction } = useWallet();
+  const { connection } = useConnection();
   const program = useFirstBiteProgram();
 
   const [state, setState] = useState<LoadState>({ kind: "loading" });
@@ -76,19 +77,32 @@ export default function ClaimPage() {
     setClaimState("claiming");
     setClaimError(null);
     try {
-      const [claimRecord] = claimRecordPda(bitePubkey, publicKey);
-      // No sponsor wired up yet (M4.2) — the connected wallet pays its own
-      // fee for now, same as any ordinary transaction.
-      const sig = await program.methods
-        .claim()
-        .accountsPartial({
-          claimer: publicKey,
-          bite: bitePubkey,
-          claimRecord,
-          payer: publicKey,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
+      if (!signTransaction) {
+        throw new Error("This wallet doesn't support signing transactions.");
+      }
+
+      // The Sponsor Service (see app/src/app/api/claim/route.ts) builds the
+      // claim instruction itself from validated on-chain state, sets itself
+      // as feePayer, and partially signs — the client never constructs the
+      // transaction or tells the server what to sign (docs/SECURITY.md).
+      const res = await fetch("/api/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bite: bitePubkey.toBase58(), claimer: publicKey.toBase58() }),
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        throw new Error(body.error ?? "The sponsor service rejected this claim.");
+      }
+
+      const tx = Transaction.from(Buffer.from(body.transaction, "base64"));
+      const signed = await signTransaction(tx);
+      const sig = await connection.sendRawTransaction(signed.serialize());
+      await connection.confirmTransaction(
+        { signature: sig, ...(await connection.getLatestBlockhash("confirmed")) },
+        "confirmed"
+      );
+
       setSignature(sig);
       setClaimState("confirmed");
       setReloadCount((c) => c + 1);

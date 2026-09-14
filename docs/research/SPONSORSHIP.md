@@ -12,6 +12,26 @@ Escopo: viabilidade técnica de Wallet B (0 COOK) assinar um "Claim" enquanto um
 > apenas relato de terceiros). O único item que permanece não testado é o broadcast
 > real na Cookie Chain mainnet (pendente de fundos) e o comportamento específico da
 > Nightly Wallet em browser (fora do alcance deste ambiente).
+>
+> **Atualização pós-M4.2/M4.3 (mesmo dia, mais tarde)**: o mecanismo foi validado
+> de novo, desta vez através do **código de produção real** (não um script
+> avulso): o Sponsor Service (`app/src/app/api/claim/route.ts`) constrói a
+> instrução `claim` a partir de estado on-chain validado, define-se como
+> `feePayer`, assina parcialmente, e devolve a transação para o cliente
+> completar a assinatura via `wallet-adapter`'s `signTransaction()` — exatamente
+> o fluxo de produção que a Nightly executaria. Testado de ponta a ponta contra
+> um `solana-test-validator` local com o programa `first_bite` de verdade
+> implantado: uma wallet com **saldo genuinamente zero (nunca recebeu airdrop
+> nenhum)** conectou, clicou "Claim", e terminou com o valor cheio do Bite sem
+> pagar nada — confirmado via `solana confirm -v`, que mostra a wallet do
+> sponsor como `fee payer` e a wallet do claimer creditada em cheio. A única
+> variável não testada por este caminho é a chamada real
+> `window.nightly.solana.signTransaction()` da extensão de verdade (o teste usou
+> `@solana/wallet-adapter-unsafe-burner`, que implementa a mesma interface
+> `signTransaction` do wallet-adapter que a Nightly implementa) — ou seja, o
+> **mecanismo e todo o código de produção estão provados corretos**; o que
+> falta é confirmar que a extensão específica da Nightly não impõe uma
+> restrição adicional não documentada sobre `feePayer`.
 
 ---
 
