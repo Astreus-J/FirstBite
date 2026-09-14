@@ -40,7 +40,7 @@ describe("first_bite", () => {
   async function createBite(
     creator: Keypair,
     biteId: BN,
-    amountPerClaim: number,
+    amountPerClaim: number | BN,
     maxClaims: number,
     expiration: number
   ) {
@@ -252,5 +252,41 @@ describe("first_bite", () => {
     // Bite must still exist and be untouched.
     const account = await program.account.bite.fetch(bite);
     assert.equal(account.claimedCount, 0);
+  });
+
+  it("rejects a claim on a Bite that has already been cancelled", async () => {
+    const creator = Keypair.generate();
+    const claimer = Keypair.generate();
+    await airdrop(creator.publicKey, 1_000_000_000);
+
+    const biteId = freshBiteId();
+    const bite = await createBite(creator, biteId, RENT_EXEMPT_MIN_0_BYTES, 2, 0);
+
+    await program.methods
+      .cancelBite()
+      .accountsPartial({ creator: creator.publicKey, bite })
+      .signers([creator])
+      .rpc();
+
+    try {
+      await claim(bite, claimer, creator);
+      assert.fail("expected claim on a cancelled (closed) Bite to be rejected");
+    } catch (err) {
+      // The Bite account no longer exists — Anchor rejects deserializing it.
+      assert.include(JSON.stringify(err), "AccountNotInitialized");
+    }
+  });
+
+  it("rejects create_bite when amount_per_claim * max_claims overflows u64", async () => {
+    const creator = provider.wallet.payer as Keypair;
+    const biteId = freshBiteId();
+    const nearU64Max = new BN("18446744073709551615"); // u64::MAX
+
+    try {
+      await createBite(creator, biteId, nearU64Max, 2, 0);
+      assert.fail("expected create_bite to reject an overflowing total deposit");
+    } catch (err) {
+      assert.include(JSON.stringify(err), "Overflow");
+    }
   });
 });
