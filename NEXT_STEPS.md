@@ -2,9 +2,13 @@
 
 Estado em 2026-09-14. Checklist completo e mais detalhado em `docs/SUBMISSION.md`.
 
-## 🔴 Bloqueador ativo
+## ⏸️ Deploy pausado deliberadamente
 
-**Precisamos de COOK real para fazer o deploy.** Sem isso, nada da lista abaixo é possível.
+**Decisão do usuário (2026-09-14): aguardar o resultado do hackathon (anúncio em 28/09/2026) antes de gastar dinheiro no deploy.** Não é mais um bloqueador técnico — é uma escolha estratégica de não investir antes de saber se compensa. Retomar esta seção quando o usuário decidir seguir.
+
+## 🔴 Quando retomar: precisamos de COOK real para fazer o deploy
+
+Sem isso, nada da lista abaixo é possível.
 
 - Custo estimado: ~1,5 COOK (rent-exemption do programa, medido localmente) + um saldo extra para o Sponsor Service pagar as taxas dos claims durante a demo.
 - Caminho em andamento: pedir ao time da Cookie Chain via Discord (`discord.gg/dP6EjZeSJW`) ou Telegram (`@TheCookieNetChain`) — outro projeto deste mesmo bounty já conseguiu um "gas drip" assim.
