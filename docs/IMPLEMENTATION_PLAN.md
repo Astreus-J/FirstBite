@@ -28,9 +28,9 @@ Status possíveis: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED`.
 
 | ID | Objetivo | Branch | Depende de | Critério de aceite | Teste |
 |---|---|---|---|---|---|
-| M2.1 | Scaffold Next.js + Tailwind | `feature/nightly-wallet` | M0.4 | `npm run dev` sobe uma página em branco estilizada | manual |
-| M2.2 | Integrar `@solana/wallet-adapter-react` + `@nightlylabs/wallet-selector-solana`, apontando para a Cookie Chain via genesis hash/RPC | `feature/nightly-wallet` | M2.1 | Botão "Connect Nightly" conecta e mostra o endereço da wallet | Skill `run` (subir app e testar no browser) |
-| M2.3 | Testar em browser real se a Nightly aceita assinar transação com `feePayer` != wallet conectada | `feature/nightly-wallet` | M2.2 | Resultado documentado em `docs/research/SPONSORSHIP.md` (fecha o Research Gate #1 de vez) | manual, com wallet financiada do usuário |
+| M2.1 | Scaffold Next.js + Tailwind | `feature/nightly-wallet` | M0.4 | `npm run dev` sobe uma página em branco estilizada | DONE — `app/` (Next.js 16.3.5, TS, Tailwind, App Router) |
+| M2.2 | Integrar `@solana/wallet-adapter-react` + adapter Nightly, apontando para a Cookie Chain via RPC | `feature/nightly-wallet` | M2.1 | Botão "Connect Nightly" conecta e mostra o endereço da wallet | DONE — usamos `@solana/wallet-adapter-nightly` (pacote oficial `anza-xyz/wallet-adapter`, publicado 2026-09-10), **não** `@nightlylabs/wallet-selector-solana` como o `DECISIONS.md` original previa (esse pacote está deprecated no npm — "no longer supported"). Verificado com Playwright headless: página renderiza, modal lista "Nightly" como opção, zero erros de console. |
+| M2.3 | Testar em browser real se a Nightly aceita assinar transação com `feePayer` != wallet conectada | `feature/nightly-wallet` | M2.2 | Resultado documentado em `docs/research/SPONSORSHIP.md` (fecha o Research Gate #1 de vez) | **BLOCKED — requer browser real com a extensão Nightly instalada e uma wallet do usuário**; não executável neste sandbox (sem GUI/extensão). Aguardando o usuário. |
 
 ## Milestone 3 — Create Bite (frontend + integração)
 
