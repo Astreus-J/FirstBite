@@ -1,0 +1,385 @@
+{
+  "address": "6Ep1pAfRVX65QPdSnjgd1AyB3AahqNenN5bLVNf1Y6Wy",
+  "metadata": {
+    "name": "first_bite",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "cancel_bite",
+      "docs": [
+        "Cancels a Bite and returns all remaining lamports (undistributed",
+        "deposit + rent) to the original creator. Only the creator may call",
+        "this."
+      ],
+      "discriminator": [
+        129,
+        179,
+        223,
+        169,
+        37,
+        151,
+        246,
+        15
+      ],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bite",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bite.creator",
+                "account": "Bite"
+              },
+              {
+                "kind": "account",
+                "path": "bite.bite_id",
+                "account": "Bite"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim",
+      "docs": [
+        "Claims one share of a Bite. `claimer` proves intent by signing but",
+        "never needs to hold a balance — `payer` (the sponsor, in the",
+        "sponsored-fee flow) covers this transaction's fee and the",
+        "ClaimRecord's rent."
+      ],
+      "discriminator": [
+        62,
+        198,
+        214,
+        193,
+        213,
+        159,
+        108,
+        210
+      ],
+      "accounts": [
+        {
+          "name": "claimer",
+          "docs": [
+            "The recipient. Not required to hold any lamports — this is the whole",
+            "point of FirstBite. Must sign to prove it is the intended claimer;",
+            "the fee for this transaction is expected to be paid by a separate",
+            "feePayer (the sponsor), never by this account. `mut` because its",
+            "lamport balance is credited directly below."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bite",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bite.creator",
+                "account": "Bite"
+              },
+              {
+                "kind": "account",
+                "path": "bite.bite_id",
+                "account": "Bite"
+              }
+            ]
+          }
+        },
+        {
+          "name": "claim_record",
+          "docs": [
+            "Existence of this PDA is itself the proof that (bite, claimer) has",
+            "already claimed — `init` fails outright on a second attempt, which is",
+            "what makes duplicate claims impossible rather than merely checked."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  97,
+                  105,
+                  109
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bite"
+              },
+              {
+                "kind": "account",
+                "path": "claimer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "Pays rent for the new `ClaimRecord` account. In the sponsored flow",
+            "this is the sponsor (feePayer); nothing here requires it to be the",
+            "claimer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_bite",
+      "docs": [
+        "Creates a Bite: deposits `amount_per_claim * max_claims` native COOK",
+        "into a program-owned PDA. `expiration` is a unix timestamp, or 0 for",
+        "no expiration."
+      ],
+      "discriminator": [
+        193,
+        127,
+        206,
+        230,
+        21,
+        82,
+        97,
+        55
+      ],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bite",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              },
+              {
+                "kind": "arg",
+                "path": "bite_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bite_id",
+          "type": "u64"
+        },
+        {
+          "name": "amount_per_claim",
+          "type": "u64"
+        },
+        {
+          "name": "max_claims",
+          "type": "u32"
+        },
+        {
+          "name": "expiration",
+          "type": "i64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Bite",
+      "discriminator": [
+        35,
+        143,
+        3,
+        76,
+        55,
+        131,
+        126,
+        127
+      ]
+    },
+    {
+      "name": "ClaimRecord",
+      "discriminator": [
+        57,
+        229,
+        0,
+        9,
+        65,
+        62,
+        96,
+        7
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AmountPerClaimTooLow",
+      "msg": "amount_per_claim must be at least the rent-exempt minimum for a new account"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidMaxClaims",
+      "msg": "max_claims must be greater than zero"
+    },
+    {
+      "code": 6002,
+      "name": "BiteNotActive",
+      "msg": "this Bite is not active"
+    },
+    {
+      "code": 6003,
+      "name": "BiteExpired",
+      "msg": "this Bite has expired"
+    },
+    {
+      "code": 6004,
+      "name": "Unauthorized",
+      "msg": "only the original creator can perform this action"
+    },
+    {
+      "code": 6005,
+      "name": "Overflow",
+      "msg": "arithmetic overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "Bite",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "bite_id",
+            "type": "u64"
+          },
+          {
+            "name": "amount_per_claim",
+            "type": "u64"
+          },
+          {
+            "name": "max_claims",
+            "type": "u32"
+          },
+          {
+            "name": "claimed_count",
+            "type": "u32"
+          },
+          {
+            "name": "expiration",
+            "docs": [
+              "Unix timestamp. 0 means \"no expiration\"."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "BiteStatus"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BiteStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Depleted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bite",
+            "type": "pubkey"
+          },
+          {
+            "name": "claimer",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}
