@@ -9,6 +9,8 @@ import { useFirstBiteProgram } from "@/lib/program/useFirstBiteProgram";
 import { claimRecordPda } from "@/lib/program/pda";
 import { lamportsToCook } from "@/lib/program/units";
 import { COOKIE_CHAIN_EXPLORER_TX } from "@/lib/program/constants";
+import { friendlyError, type TxPhase } from "@/lib/tx-status";
+import { TransactionStatus } from "../../TransactionStatus";
 
 type BiteAccount = {
   creator: PublicKey;
@@ -24,8 +26,6 @@ type LoadState =
   | { kind: "not-found" }
   | { kind: "ready"; bite: BiteAccount; alreadyClaimed: boolean; isExpired: boolean };
 
-type ClaimState = "idle" | "claiming" | "confirmed" | "error";
-
 export default function ClaimPage() {
   const params = useParams<{ biteAddress: string }>();
   const { publicKey, connected, signTransaction } = useWallet();
@@ -33,7 +33,7 @@ export default function ClaimPage() {
   const program = useFirstBiteProgram();
 
   const [state, setState] = useState<LoadState>({ kind: "loading" });
-  const [claimState, setClaimState] = useState<ClaimState>("idle");
+  const [phase, setPhase] = useState<TxPhase>("idle");
   const [claimError, setClaimError] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [reloadCount, setReloadCount] = useState(0);
@@ -74,17 +74,17 @@ export default function ClaimPage() {
 
   async function handleClaim() {
     if (!bitePubkey || !publicKey || state.kind !== "ready") return;
-    setClaimState("claiming");
     setClaimError(null);
     try {
       if (!signTransaction) {
-        throw new Error("This wallet doesn't support signing transactions.");
+        throw new Error("doesn't support signing");
       }
 
       // The Sponsor Service (see app/src/app/api/claim/route.ts) builds the
       // claim instruction itself from validated on-chain state, sets itself
       // as feePayer, and partially signs — the client never constructs the
       // transaction or tells the server what to sign (docs/SECURITY.md).
+      setPhase("preparing");
       const res = await fetch("/api/claim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -96,20 +96,26 @@ export default function ClaimPage() {
       }
 
       const tx = Transaction.from(Buffer.from(body.transaction, "base64"));
+
+      setPhase("awaiting-signature");
       const signed = await signTransaction(tx);
+
+      setPhase("submitted");
       const sig = await connection.sendRawTransaction(signed.serialize());
+
+      setPhase("confirming");
       await connection.confirmTransaction(
         { signature: sig, ...(await connection.getLatestBlockhash("confirmed")) },
         "confirmed"
       );
 
       setSignature(sig);
-      setClaimState("confirmed");
+      setPhase("confirmed");
       setReloadCount((c) => c + 1);
     } catch (err) {
       console.error(err);
-      setClaimError(err instanceof Error ? err.message : "Something went wrong claiming this Bite.");
-      setClaimState("error");
+      setClaimError(friendlyError(err));
+      setPhase("failed");
     }
   }
 
@@ -148,7 +154,7 @@ export default function ClaimPage() {
         </p>
       </div>
 
-      {claimState === "confirmed" && signature ? (
+      {phase === "confirmed" && signature ? (
         <div className="flex flex-col items-center gap-2">
           <p className="font-medium text-green-600 dark:text-green-400">
             Confirmed — welcome to Cookie Chain! 🎉
@@ -185,14 +191,12 @@ export default function ClaimPage() {
           )}
           <button
             onClick={handleClaim}
-            disabled={!canClaim || claimState === "claiming"}
+            disabled={!canClaim || (phase !== "idle" && phase !== "failed")}
             className="rounded-full bg-purple-700 px-6 py-2.5 font-medium text-white transition hover:opacity-90 disabled:opacity-50"
           >
-            {claimState === "claiming" ? "Confirming…" : "Claim"}
+            Claim
           </button>
-          {claimState === "error" && claimError && (
-            <p className="text-sm text-red-600 dark:text-red-400">{claimError}</p>
-          )}
+          <TransactionStatus phase={phase} error={claimError} />
         </div>
       )}
     </main>

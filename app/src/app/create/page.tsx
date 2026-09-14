@@ -3,20 +3,21 @@
 import { useMemo, useState } from "react";
 import { SystemProgram } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { QRCodeSVG } from "qrcode.react";
 import { useFirstBiteProgram } from "@/lib/program/useFirstBiteProgram";
 import { bitePda, freshBiteId } from "@/lib/program/pda";
 import { cookToLamports, LAMPORTS_PER_COOK } from "@/lib/program/units";
 import { RENT_EXEMPT_MIN_0_BYTES, COOKIE_CHAIN_EXPLORER_TX } from "@/lib/program/constants";
+import { friendlyError, type TxPhase } from "@/lib/tx-status";
+import { TransactionStatus } from "../TransactionStatus";
 
 const MIN_AMOUNT_PER_CLAIM_COOK = RENT_EXEMPT_MIN_0_BYTES / LAMPORTS_PER_COOK;
 
-type Status = "idle" | "submitting" | "confirmed" | "error";
-
 export default function CreateBitePage() {
-  const { connected, publicKey } = useWallet();
+  const { connected, publicKey, signTransaction } = useWallet();
+  const { connection } = useConnection();
   const program = useFirstBiteProgram();
 
   const [amountPerClaim, setAmountPerClaim] = useState(String(MIN_AMOUNT_PER_CLAIM_COOK.toFixed(6)));
@@ -24,7 +25,7 @@ export default function CreateBitePage() {
   const [hasExpiration, setHasExpiration] = useState(false);
   const [expirationLocal, setExpirationLocal] = useState("");
 
-  const [status, setStatus] = useState<Status>("idle");
+  const [phase, setPhase] = useState<TxPhase>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [claimUrl, setClaimUrl] = useState<string | null>(null);
@@ -52,31 +53,49 @@ export default function CreateBitePage() {
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     if (!publicKey || validationError) return;
+    if (!signTransaction) {
+      setErrorMessage(friendlyError(new Error("doesn't support signing")));
+      setPhase("failed");
+      return;
+    }
 
-    setStatus("submitting");
     setErrorMessage(null);
 
     try {
+      setPhase("preparing");
       const id = freshBiteId();
       const [bite] = bitePda(publicKey, id);
       const expiration = hasExpiration ? Math.floor(new Date(expirationLocal).getTime() / 1000) : 0;
 
-      const sig = await program.methods
+      const tx = await program.methods
         .createBite(id, cookToLamports(amountPerClaimNumber), maxClaimsNumber, new BN(expiration))
         .accountsPartial({
           creator: publicKey,
           bite,
           systemProgram: SystemProgram.programId,
         })
-        .rpc();
+        .transaction();
+
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash("confirmed");
+      tx.feePayer = publicKey;
+      tx.recentBlockhash = blockhash;
+
+      setPhase("awaiting-signature");
+      const signed = await signTransaction(tx);
+
+      setPhase("submitted");
+      const sig = await connection.sendRawTransaction(signed.serialize());
+
+      setPhase("confirming");
+      await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, "confirmed");
 
       setSignature(sig);
       setClaimUrl(`${window.location.origin}/claim/${bite.toBase58()}`);
-      setStatus("confirmed");
+      setPhase("confirmed");
     } catch (err) {
       console.error(err);
-      setErrorMessage(err instanceof Error ? err.message : "Something went wrong preparing or sending the transaction.");
-      setStatus("error");
+      setErrorMessage(friendlyError(err));
+      setPhase("failed");
     }
   }
 
@@ -92,7 +111,7 @@ export default function CreateBitePage() {
     );
   }
 
-  if (status === "confirmed" && claimUrl) {
+  if (phase === "confirmed" && claimUrl) {
     return (
       <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
         <h1 className="text-3xl font-bold">Your Bite is ready 🍪</h1>
@@ -119,7 +138,7 @@ export default function CreateBitePage() {
         <button
           className="text-sm text-neutral-500 underline dark:text-neutral-400"
           onClick={() => {
-            setStatus("idle");
+            setPhase("idle");
             setSignature(null);
             setClaimUrl(null);
           }}
@@ -187,16 +206,14 @@ export default function CreateBitePage() {
         </p>
 
         {validationError && <p className="text-sm text-red-600 dark:text-red-400">{validationError}</p>}
-        {status === "error" && errorMessage && (
-          <p className="text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
-        )}
+        <TransactionStatus phase={phase} error={errorMessage} />
 
         <button
           type="submit"
-          disabled={!!validationError || status === "submitting"}
+          disabled={!!validationError || (phase !== "idle" && phase !== "failed")}
           className="rounded-full bg-purple-700 px-4 py-2 font-medium text-white transition hover:opacity-90 disabled:opacity-50"
         >
-          {status === "submitting" ? "Preparing transaction…" : "Deposit & create Bite"}
+          Deposit & create Bite
         </button>
       </form>
     </main>
