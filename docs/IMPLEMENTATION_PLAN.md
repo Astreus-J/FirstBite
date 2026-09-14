@@ -17,7 +17,7 @@ Status possíveis: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED`.
 
 | ID | Objetivo | Branch | Depende de | Arquivos | Critério de aceite | Teste |
 |---|---|---|---|---|---|---|
-| M1.1 | Inicializar workspace Anchor (`anchor init`) | `feature/anchor-program` | M0.4 | `programs/`, `Anchor.toml`, `Cargo.toml` | `anchor build` roda sem erro | DONE — precisou fixar `[package.metadata.solana] tools-version = "v1.54"` no `Cargo.toml` do programa (o platform-tools default v1.48 do Solana CLI 2.3.0 tem rustc 1.84, incompatível com uma dependência transitiva do anchor-lang 0.32.1 que exige edition2024) |
+| M1.1 | Inicializar workspace Anchor (`anchor init`) | `feature/anchor-program` | M0.4 | `programs/`, `Anchor.toml`, `Cargo.toml` | `anchor build` roda sem erro | DONE — precisou fixar `[package.metadata.solana] tools-version = "v1.54"` no `Cargo.toml` do programa (o platform-tools default v1.48 do Solana CLI 2.3.0 tem rustc 1.84, incompatível com uma dependência transitiva do anchor-lang 0.32.1 que exige edition2024). Nota tardia (achada durante M3.2): um `rm -rf target/deploy` feito nessa investigação regenerou a keypair do programa sem atualizar `declare_id!`/`Anchor.toml` — corrigido com `anchor keys sync` antes do primeiro deploy real. |
 | M1.2 | Instrução `create_bite` | `feature/anchor-program` | M1.1 | `programs/first_bite/src/instructions/create_bite.rs` | Cria PDA `Bite` com seeds `[b"bite", creator, bite_id]`, valida `amount_per_claim >= rent-exempt minimum`, transfere depósito total do creator para o PDA | DONE — `anchor test`: 9/9 passing |
 | M1.3 | Instrução `claim` | `feature/anchor-program` | M1.2 | `.../claim.rs` | Cria `ClaimRecord` PDA `[b"claim", bite, claimer]` (falha se já existir), valida `status == Active`, valida `expiration` se definido, transfere `amount_per_claim` do PDA do Bite para o claimer, incrementa `claimed_count` (checked) | DONE — cobre claim válido, zero-balance claimer real, duplicate claim, Bite depletado, Bite expirado |
 | M1.4 | Instrução `cancel_bite` | `feature/anchor-program` | M1.2 | `.../cancel_bite.rs` | Só o `creator` original pode cancelar (constraint customizada com erro `Unauthorized`); devolve saldo remanescente + rent e fecha a conta (`close = creator`) | DONE — cobre cancelamento pelo creator correto e rejeição de terceiros |
@@ -36,9 +36,9 @@ Status possíveis: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED`.
 
 | ID | Objetivo | Branch | Depende de | Critério de aceite | Teste |
 |---|---|---|---|---|---|
-| M3.1 | Formulário de criação (amount, claims, valor por claim, expiration) com validação client-side espelhando as constraints on-chain | `feature/create-bite` | M1.2, M2.2 | Formulário rejeita valores abaixo do rent-exempt mínimo antes de enviar | manual |
-| M3.2 | Chamar `create_bite` via Anchor client, assinado pela wallet do creator | `feature/create-bite` | M3.1 | Transação confirma e aparece no CookieScan | manual + `run` skill |
-| M3.3 | Gerar link compartilhável + QR Code | `feature/qr-sharing` | M3.2 | Link contém o `bite_pubkey`; QR renderiza e escaneia corretamente | manual |
+| M3.1 | Formulário de criação (amount, claims, valor por claim, expiration) com validação client-side espelhando as constraints on-chain | `feature/create-bite` | M1.2, M2.2 | Formulário rejeita valores abaixo do rent-exempt mínimo antes de enviar | DONE |
+| M3.2 | Chamar `create_bite` via Anchor client, assinado pela wallet do creator | `feature/create-bite` | M3.1 | Transação confirma on-chain | DONE — testado de ponta a ponta contra `solana-test-validator` local (Nightly real fica para M2.3/M4.3) via burner wallet temporária (revertida antes do commit); achado real de bug corrigido: `step` numérico no input HTML5 rejeitava valores válidos como "0.01" por desalinhamento com um `min` decimal "feio" — trocado para `step="any"`. Signature confirmada via `solana confirm`. |
+| M3.3 | Gerar link compartilhável + QR Code | `feature/create-bite` | M3.2 | Link contém o `bite_pubkey`; QR renderiza e escaneia corretamente | DONE — consolidado na mesma tela/branch do M3.2 em vez de branch separada, já que são parte do mesmo fluxo/estado de sucesso |
 
 ## Milestone 4 — Claim (frontend + sponsorship)
 

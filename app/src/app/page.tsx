@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
@@ -24,12 +25,20 @@ export default function Home() {
       <WalletMultiButton />
 
       {connected && publicKey && (
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          Connected as{" "}
-          <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-            {publicKey.toBase58()}
-          </code>
-        </p>
+        <>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Connected as{" "}
+            <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
+              {publicKey.toBase58()}
+            </code>
+          </p>
+          <Link
+            href="/create"
+            className="rounded-full bg-purple-700 px-5 py-2.5 font-medium text-white transition hover:opacity-90"
+          >
+            Create a Bite
+          </Link>
+        </>
       )}
     </main>
   );

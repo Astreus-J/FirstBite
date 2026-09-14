@@ -6,7 +6,7 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("6Ep1pAfRVX65QPdSnjgd1AyB3AahqNenN5bLVNf1Y6Wy");
+declare_id!("CQF8w7foXSSnbHhaQNdgWjjwA72XjbGmLZhgGSmX55KZ");
 
 #[program]
 pub mod first_bite {
