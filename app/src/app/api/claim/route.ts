@@ -5,6 +5,20 @@ import { claimRecordPda } from "@/lib/program/pda";
 import { biteRateLimiter, getClientIp, ipRateLimiter } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  try {
+    return await handleClaim(request);
+  } catch (err) {
+    // Any unexpected failure (e.g. SPONSOR_SECRET_KEY missing, RPC down)
+    // must still come back as JSON — otherwise the client's `res.json()`
+    // throws its own confusing "Unexpected end of JSON input" instead of
+    // the real error, and friendlyError() never gets a message to work
+    // with (docs/PRODUCT.md: no raw crashes surfaced to the user).
+    console.error("Unexpected /api/claim error:", err);
+    return NextResponse.json({ error: "The sponsor service is temporarily unavailable." }, { status: 500 });
+  }
+}
+
+async function handleClaim(request: Request): Promise<Response> {
   if (ipRateLimiter.check(getClientIp(request))) {
     return NextResponse.json({ error: "Too many requests. Try again shortly." }, { status: 429 });
   }

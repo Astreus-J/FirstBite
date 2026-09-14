@@ -11,14 +11,14 @@ Contexto de produto completo: `docs/PRODUCT.md`. Pesquisa e evidências: `docs/r
 ## Arquitetura resumida
 
 - **Programa Anchor** (Rust): um PDA por `Bite` (estado + saldo nativo de COOK na mesma conta — Arquitetura A, `docs/ARCHITECTURE.md`), e um PDA `ClaimRecord` por `(bite, claimer)` para impedir claim duplicado.
-- **Frontend**: Next.js + TypeScript + Tailwind, `@solana/wallet-adapter-react` + `@nightlylabs/wallet-selector-solana` para conectar a Nightly.
+- **Frontend**: Next.js + TypeScript + Tailwind, `@solana/wallet-adapter-react` + `@solana/wallet-adapter-nightly` para conectar a Nightly (o pacote `@nightlylabs/wallet-selector-solana` cogitado na pesquisa inicial está deprecated — ver `docs/DECISIONS.md`).
 - **Sponsor Service**: rota de API do próprio Next.js. Monta a transação `claim` do zero a partir de `{bite_pubkey, claimer_pubkey}`, nunca assina uma transação vinda do cliente. Ver `docs/SECURITY.md`.
 - Detalhes e alternativas descartadas: `docs/DECISIONS.md`.
 
 ## Comandos essenciais
 
 - `anchor build` / `anchor test` — programa (usa `solana-test-validator` local; nunca precisa de COOK real).
-- `npm run dev` (dentro do app Next.js, quando existir) — frontend local.
+- `npm run dev` / `npm run test` / `npm run lint` (dentro de `app/`) — frontend local.
 - `node poc/poc.mjs <sponsor-keypair> <receiver-keypair> [amount]` — reexecuta o Technical PoC do fee sponsorship. Default aponta para `rpc.cookiescan.io`; `POC_RPC_URL=http://127.0.0.1:8899` para rodar local.
 
 ## Regras críticas de segurança

@@ -4,12 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { WalletButton } from "@/app/WalletButton";
 import { useFirstBiteProgram } from "@/lib/program/useFirstBiteProgram";
 import { claimRecordPda } from "@/lib/program/pda";
 import { lamportsToCook } from "@/lib/program/units";
 import { COOKIE_CHAIN_EXPLORER_TX } from "@/lib/program/constants";
 import { friendlyError, type TxPhase } from "@/lib/tx-status";
+import { truncateAddress } from "@/lib/format";
 import { TransactionStatus } from "../../TransactionStatus";
 
 type BiteAccount = {
@@ -140,59 +141,63 @@ export default function ClaimPage() {
   const isActive = "active" in bite.status;
   const remaining = bite.maxClaims - bite.claimedCount;
   const amountCook = lamportsToCook(bite.amountPerClaim.toNumber());
+  const isConfirmed = phase === "confirmed" && signature;
 
   const canClaim = isActive && !isExpired && remaining > 0 && !alreadyClaimed;
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
+    <main className="mx-auto flex w-full max-w-sm flex-1 flex-col items-center justify-center gap-6 px-6 py-16 text-center">
       <h1 className="text-3xl font-bold">You&apos;ve got a Bite 🍪</h1>
 
-      <div className="rounded-2xl border border-neutral-200 px-6 py-5 dark:border-neutral-800">
-        <p className="text-4xl font-bold">{amountCook} COOK</p>
-        <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+      <div
+        className={`w-full rounded-2xl px-6 py-8 transition-colors ${
+          isConfirmed ? "bg-success text-success-ink" : "bg-primary text-primary-ink"
+        }`}
+      >
+        <p className="text-5xl font-bold tabular-nums">{amountCook}</p>
+        <p className="mt-1 text-sm font-medium opacity-90">COOK</p>
+        <p className="mt-4 text-sm opacity-80">
           {remaining} of {bite.maxClaims} claim{bite.maxClaims === 1 ? "" : "s"} remaining
         </p>
       </div>
 
-      {phase === "confirmed" && signature ? (
+      {isConfirmed ? (
         <div className="flex flex-col items-center gap-2">
-          <p className="font-medium text-green-600 dark:text-green-400">
-            Confirmed — welcome to Cookie Chain! 🎉
-          </p>
+          <p className="font-medium text-success">Welcome to Cookie Chain! 🎉</p>
           <a
-            className="text-sm text-purple-600 underline dark:text-purple-400"
+            className="text-sm font-medium text-accent underline underline-offset-2 transition hover:opacity-80"
             href={COOKIE_CHAIN_EXPLORER_TX(signature)}
             target="_blank"
             rel="noreferrer"
           >
-            View transaction on CookieScan
+            View transaction on CookieScan ↗
           </a>
         </div>
       ) : alreadyClaimed ? (
-        <p className="text-neutral-600 dark:text-neutral-300">You&apos;ve already claimed this Bite.</p>
+        <p className="text-muted">You&apos;ve already claimed this Bite.</p>
       ) : isExpired ? (
-        <p className="text-neutral-600 dark:text-neutral-300">This Bite has expired.</p>
+        <p className="text-muted">This Bite has expired.</p>
       ) : !isActive || remaining <= 0 ? (
-        <p className="text-neutral-600 dark:text-neutral-300">This Bite has no claims left.</p>
+        <p className="text-muted">This Bite has no claims left.</p>
       ) : !connected ? (
         <div className="flex flex-col items-center gap-3">
-          <p className="text-neutral-600 dark:text-neutral-300">Connect your Nightly wallet to claim.</p>
-          <WalletMultiButton />
+          <p className="text-muted">Connect your Nightly wallet to claim.</p>
+          <WalletButton />
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex w-full flex-col items-center gap-3">
           {publicKey && (
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm text-muted">
               Connected as{" "}
-              <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-                {publicKey.toBase58()}
+              <code className="rounded bg-surface px-1.5 py-0.5" title={publicKey.toBase58()}>
+                {truncateAddress(publicKey.toBase58())}
               </code>
             </p>
           )}
           <button
             onClick={handleClaim}
             disabled={!canClaim || (phase !== "idle" && phase !== "failed")}
-            className="rounded-full bg-purple-700 px-6 py-2.5 font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+            className="inline-flex h-11 w-full items-center justify-center rounded-full bg-primary px-6 font-medium text-primary-ink transition hover:opacity-90 disabled:opacity-50"
           >
             Claim
           </button>
@@ -207,7 +212,7 @@ function CenteredMessage({ title, body }: { title: string; body: string }) {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
       <h1 className="text-2xl font-bold">{title}</h1>
-      {body && <p className="max-w-sm text-neutral-600 dark:text-neutral-300">{body}</p>}
+      {body && <p className="max-w-sm text-muted">{body}</p>}
     </main>
   );
 }

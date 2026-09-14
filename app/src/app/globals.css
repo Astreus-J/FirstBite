@@ -1,26 +1,118 @@
 @import "tailwindcss";
 
+/*
+ * Palette: honey/amber primary (hue ~78, the "fresh-baked cookie" hue)
+ * paired with a dark chocolate accent — both from the cookie's own color
+ * story, not a generic crypto blue/purple. Body surfaces stay pure
+ * neutral (white / near-black) so the warmth lives in primary + accent,
+ * not in the background.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: oklch(1 0 0);
+  --surface: oklch(0.965 0.003 78);
+  --border: oklch(0.9 0.006 78);
+  --ink: oklch(0.16 0.01 78);
+  --muted: oklch(0.48 0.008 78);
+
+  --primary: oklch(0.54 0.15 78);
+  --primary-ink: oklch(1 0 0);
+  --accent: oklch(0.28 0.08 48);
+  --accent-ink: oklch(1 0 0);
+
+  --success: oklch(0.6 0.15 145);
+  --success-ink: oklch(1 0 0);
+  --error: oklch(0.55 0.2 25);
+  --error-ink: oklch(1 0 0);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-success: var(--success);
+  --color-success-ink: var(--success-ink);
+  --color-error: var(--error);
+  --color-error-ink: var(--error-ink);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: oklch(0.09 0 0);
+    --surface: oklch(0.17 0.006 78);
+    --border: oklch(0.28 0.008 78);
+    --ink: oklch(0.96 0.008 78);
+    --muted: oklch(0.66 0.015 78);
   }
 }
 
+* {
+  border-color: var(--border);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * @solana/wallet-adapter-react-ui ships hardcoded hex colors with no
+ * custom-property hooks — override the persistent trigger button (the one
+ * visible inline on every page) to match our palette instead of its
+ * default indigo. The transient connect modal keeps its own dark chrome;
+ * it's a short-lived overlay, not part of the app's persistent surface.
+ */
+/* !important is deliberate: the library's own stylesheet is imported later
+   in the bundle (via providers.tsx) than this file, so it wins ties at
+   equal specificity without it — there's no custom-property hook to hang
+   an override on instead. */
+button.wallet-adapter-button-trigger {
+  background-color: var(--primary) !important;
+  color: var(--primary-ink) !important;
+  border-radius: 9999px !important;
+  font-family: inherit !important;
+}
+
+button.wallet-adapter-button-trigger:not([disabled]):hover {
+  background-color: var(--primary) !important;
+  opacity: 0.9;
+}
+
+/* Inverted variant for the wallet button when it sits on a primary-colored
+   surface (the landing hero) — otherwise it'd disappear into the bg. */
+.wallet-button-on-primary button.wallet-adapter-button-trigger {
+  background-color: var(--bg) !important;
+  color: var(--ink) !important;
+}
+
+.wallet-button-on-primary button.wallet-adapter-button-trigger:not([disabled]):hover {
+  background-color: var(--bg) !important;
 }
