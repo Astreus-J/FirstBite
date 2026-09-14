@@ -21,6 +21,8 @@ test-ledger/
 *.key
 *-keypair.json
 id.json
+poc/keys/
+poc/node_modules/
 
 # OS / editor
 .DS_Store

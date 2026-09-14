@@ -3,6 +3,16 @@
 Data da pesquisa: 2026-09-14
 Escopo: viabilidade técnica de Wallet B (0 COOK) assinar um "Claim" enquanto uma conta Sponsor paga a taxa de rede.
 
+> **Atualização pós-Technical PoC (mesmo dia)**: o mecanismo descrito abaixo foi
+> testado de verdade (não apenas documentado) em um `solana-test-validator` local
+> (cliente Agave, mesma família da Cookie Chain) e teve sucesso end-to-end — ver
+> `poc/RESULTS.md` para a transação, saldos antes/depois e a signature. Além disso,
+> genesis hash, versão do cliente, ausência de faucet via RPC e parâmetros de rent
+> foram confirmados por chamada RPC **direta** contra `rpc.cookiescan.io` (não mais
+> apenas relato de terceiros). O único item que permanece não testado é o broadcast
+> real na Cookie Chain mainnet (pendente de fundos) e o comportamento específico da
+> Nightly Wallet em browser (fora do alcance deste ambiente).
+
 ---
 
 ## Resumo Executivo
