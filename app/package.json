@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --experimental-strip-types --test src/lib/*.test.ts",
     "sync-idl": "cp ../target/idl/first_bite.json src/lib/program/idl.json && cp ../target/types/first_bite.ts src/lib/program/first_bite.ts"
   },
   "dependencies": {
