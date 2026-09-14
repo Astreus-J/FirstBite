@@ -27,14 +27,14 @@ Status: `PASS` / `FAIL` / `NOT APPLICABLE` / `PENDING` (a preencher conforme a i
 
 | Material | Status |
 |---|---|
-| Tagline de 10s | PENDING |
-| Elevator pitch de 20s | PENDING |
-| Pitch de 60s | PENDING |
-| Pitch de 2min | PENDING |
-| Demo walkthrough (roteiro determinístico, ver `docs/PRODUCT.md` e Fase 27 do briefing original) | PENDING |
-| FAQ para jurados (objeções antecipadas — base em `docs/research/PITCH_RESEARCH.md`) | PENDING |
-| X thread | PENDING |
-| README final (estrutura da Fase 26) | PENDING |
+| Tagline de 10s | DONE — `docs/PITCH.md` |
+| Elevator pitch de 20s | DONE — `docs/PITCH.md` |
+| Pitch de 60s | DONE — `docs/PITCH.md` |
+| Pitch de 2min | DONE — `docs/PITCH.md` |
+| Demo walkthrough (roteiro determinístico, ver `docs/PRODUCT.md` e Fase 27 do briefing original) | DONE — `docs/PITCH.md` |
+| FAQ para jurados (objeções antecipadas — base em `docs/research/PITCH_RESEARCH.md`) | DONE — `docs/PITCH.md`, respostas refinadas com o produto real (não mais rascunho) |
+| X thread | DONE (rascunho) — `docs/X_THREAD.md`, faltam apenas GIFs/links/handle antes de publicar |
+| README final (estrutura da Fase 26) | DONE — `README.md` na raiz (program address/live URL marcados pending até M7) |
 | Logo 512×512 e screenshots para `apps.json` | PENDING |
 
 ## Regra de ouro antes de submeter
