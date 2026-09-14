@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/first_bite.json`.
  */
 export type FirstBite = {
-  "address": "6Ep1pAfRVX65QPdSnjgd1AyB3AahqNenN5bLVNf1Y6Wy",
+  "address": "CQF8w7foXSSnbHhaQNdgWjjwA72XjbGmLZhgGSmX55KZ",
   "metadata": {
     "name": "firstBite",
     "version": "0.1.0",

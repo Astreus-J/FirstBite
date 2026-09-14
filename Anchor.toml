@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-first_bite = "6Ep1pAfRVX65QPdSnjgd1AyB3AahqNenN5bLVNf1Y6Wy"
+first_bite = "CQF8w7foXSSnbHhaQNdgWjjwA72XjbGmLZhgGSmX55KZ"
 
 [registry]
 url = "https://api.apr.dev"
