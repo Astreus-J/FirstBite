@@ -2,17 +2,15 @@
 
 Estado em 2026-09-14. Checklist completo e mais detalhado em `docs/SUBMISSION.md`.
 
-## ⏸️ Deploy pausado deliberadamente
+## 🔴 Bloqueador ativo: conseguir COOK sem custo
 
-**Decisão do usuário (2026-09-14): aguardar o resultado do hackathon (anúncio em 28/09/2026) antes de gastar dinheiro no deploy.** Não é mais um bloqueador técnico — é uma escolha estratégica de não investir antes de saber se compensa. Retomar esta seção quando o usuário decidir seguir.
+O usuário não tem dinheiro disponível para comprar COOK agora (tentamos o caminho de compra via Pix/exchange + Jupiter + bridge, mas não é viável no momento). **Caminho ativo: pedir COOK ao time da Cookie Chain**, via Discord (`discord.gg/dP6EjZeSJW`) ou Telegram (`@TheCookieNetChain`) — outro projeto deste mesmo bounty (Cookie Jar) já conseguiu um "gas drip" assim. Mensagem pronta em `docs/COOK_REQUEST_MESSAGE.md`, só falta o usuário enviar (é uma ação pública em nome dele, não pode ser feita por mim).
 
-## 🔴 Quando retomar: precisamos de COOK real para fazer o deploy
+Duas wallets já geradas no ambiente local, aguardando fundos:
+- Deploy authority: `DMNxQCK5SgBSv3nanLnSAEYDjGGZLuUYAzJSEVPMnp8C`
+- Sponsor: `BA7ZPff3xTPmw9SLHLifNhW8rp4FzUvq3KhNZQKwJ62Q`
 
-Sem isso, nada da lista abaixo é possível.
-
-- Custo estimado: ~1,5 COOK (rent-exemption do programa, medido localmente) + um saldo extra para o Sponsor Service pagar as taxas dos claims durante a demo.
-- Caminho em andamento: pedir ao time da Cookie Chain via Discord (`discord.gg/dP6EjZeSJW`) ou Telegram (`@TheCookieNetChain`) — outro projeto deste mesmo bounty já conseguiu um "gas drip" assim.
-- Não existe faucet oficial da Cookie Chain (confirmado por chamada RPC direta), então essa é a única via sem custo real conhecida.
+Custo necessário: ~1,5-2 COOK para o deploy (rent-exemption, medido localmente) + ~1-2 COOK para o Sponsor Service (cobre centenas de claims de demo, já que cada um custa ~0,0014 COOK). Não existe faucet oficial da Cookie Chain (confirmado por chamada RPC direta), e não existe devnet/testnet (confirmado na documentação oficial) — pedir ao time é a única via sem custo real conhecida.
 
 ## Depois que houver fundos, em ordem
 
