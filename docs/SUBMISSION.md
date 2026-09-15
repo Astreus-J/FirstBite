@@ -30,6 +30,19 @@ Tudo o que **não** depende de fundos já está pronto: programa testado (11/11)
 | Mídia hospedada via `raw.githubusercontent.com` dentro do próprio repositório da submissão (não Imgur/IPFS/host próprio) | PENDING | Confirmado no README real do repo (2026-09-14): logo vai em `logos/firstbite.png`, screenshots em `screenshots/firstbite/`, dentro do fork — ver `docs/APPS_JSON_DRAFT.md` |
 | Submissão oficial e vinculante via botão "Submit Now" no listing da Superteam Earn (o PR no GitHub cataloga, mas não substitui) | PENDING | Fazer os dois: listing + PR |
 
+## Campos reais do formulário "Submit Now" (FATO CONFIRMADO — print do formulário real, 2026-09-15)
+
+Não existe campo de "pitch" nem de "demo" — o formulário do listing tem exatamente estes campos:
+
+| Campo | Obrigatório | Preencher com |
+|---|---|---|
+| Link to Your Submission | Sim | Sem definição oficial do que deve ser — na prática, o mais seguro é repetir a URL do app ao vivo, ou (melhor) um link de vídeo curto (Loom/YouTube) do fluxo criar→reivindicar, se gravado |
+| Tweet Link | Não | URL da X thread (`docs/X_THREAD.md`), se publicada |
+| Live application URL | Sim | `https://first-bite-seven.vercel.app/` — DONE |
+| GitHub repository | Sim | `https://github.com/Astreus-J/FirstBite` — DONE |
+| Relevant program, contract, token, or application addresses | **Sim** | Program Address do Anchor **na mainnet** — confirma que o deploy do programa é bloqueador formal de submissão, não só recomendado |
+| Anything Else? | Não | Texto do `docs/PITCH.md` + link do PR em `apps.json` |
+
 ## Itens não informados publicamente — verificar de novo antes de submeter
 
 - Deadline exato de submissão (só o anúncio de vencedores em 28/09/2026 está confirmado).

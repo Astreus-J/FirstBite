@@ -25,7 +25,7 @@ Preenchido com tudo que **não** depende do deploy real. Campos pendentes usam `
   "category": "Infrastructure",
   "tags": ["onboarding", "fee-sponsorship", "gasless", "nightly-wallet", "anchor"],
   "links": {
-    "website": null,
+    "website": "https://first-bite-seven.vercel.app/",
     "demo": null,
     "github": "https://github.com/Astreus-J/FirstBite",
     "x": null,
@@ -48,9 +48,9 @@ Preenchido com tudo que **não** depende do deploy real. Campos pendentes usam `
 }
 ```
 
-## O que ainda falta antes de abrir o PR (todos dependem do deploy — Milestone 7)
+## O que ainda falta antes de abrir o PR
 
-- `links.website`: obrigatório pelos critérios de revisão do repo ("Have a working public URL, not just a repo") — **não é opcional**, ao contrário do que o rascunho anterior sugeria. Sem isso o PR não passa nos critérios de review.
+- `links.website`: preenchido (`https://first-bite-seven.vercel.app/`, frontend já implantado na Vercel em 2026-09-15) — **mas o programa Anchor ainda não está na mainnet**, então o fluxo criar→reivindicar não funciona de ponta a ponta contra essa URL ainda. Não abrir o PR nem submeter no listing antes disso estar resolvido, mesmo com o link já existindo — cumprir "Ship something usable, not a landing page or a mockup" exige o programa on-chain de verdade.
 - `links.demo`/`links.video`: opcionais, mas `video` é descrito como "the single most useful thing for a reviewer" — vale gravar um GIF/vídeo curto do fluxo criar→reivindicar assim que houver deploy real (pode reaproveitar o roteiro de `docs/PITCH.md`).
 - `media.screenshots`: numeradas, commitadas em `screenshots/firstbite/` no fork, mostrando o app implantado de verdade (não localhost).
 - `links.x`/`team[].x`: opcional — decidir se cria uma conta X do projeto antes de publicar `docs/X_THREAD.md` (esse arquivo já espera um `@handle`).

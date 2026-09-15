@@ -17,7 +17,7 @@ Cookie Chain has **no public faucet** (confirmed by direct RPC call — `request
 
 ## Demo
 
-- Live application: _pending deployment — see `docs/IMPLEMENTATION_PLAN.md` Milestone 7_
+- Live application: https://first-bite-seven.vercel.app/ (frontend deployed; the on-chain program itself is still pending a mainnet deploy — see `docs/IMPLEMENTATION_PLAN.md` Milestone 7 — so the create/claim flow won't work end-to-end against this URL yet)
 - Screenshots and a walkthrough of the create → claim flow are in `poc/RESULTS.md` and referenced throughout `docs/`.
 
 ## How It Works

@@ -1,6 +1,6 @@
 # O que falta para terminar o FirstBite
 
-Estado em 2026-09-14. Checklist completo e mais detalhado em `docs/SUBMISSION.md`.
+Estado em 2026-09-15. Checklist completo e mais detalhado em `docs/SUBMISSION.md`.
 
 ## 🔴 Bloqueador ativo: conseguir COOK sem custo
 
@@ -16,11 +16,11 @@ Custo necessário: ~1,5-2 COOK para o deploy (rent-exemption, medido localmente)
 
 1. **Deploy do programa** na Cookie Chain mainnet (`anchor deploy`).
 2. **Financiar o Sponsor Service** com uma chave real (nunca reusar as chaves de teste geradas durante o desenvolvimento).
-3. **Deploy do frontend** (Vercel), com as variáveis de ambiente de produção configuradas.
+3. ~~Deploy do frontend (Vercel)~~ — **DONE**, já no ar em `https://first-bite-seven.vercel.app/`. Falta configurar as variáveis de ambiente de produção apontando para o programa real assim que ele existir.
 4. **Teste manual completo na mainnet real**, com a Nightly de verdade — o mecanismo já foi validado localmente e com a extensão real contra um validador local; falta confirmar contra a chain de produção.
-5. **Atualizar o `README.md`** com o Program Address real, a URL da aplicação, e um link de transação real no CookieScan.
-6. **Abrir o PR com o `apps.json`** no fork do repositório oficial (`cookiechain/superteam-hackathon-submissions`) — rascunho completo em `docs/APPS_JSON_DRAFT.md` (logo já pronto em `media/logo-512.png`); falta só `links.website` e os screenshots reais, que dependem do deploy.
-7. **Submeter oficialmente**: botão "Submit Now" no listing da Superteam Earn **e** abrir o Pull Request no GitHub (os dois são necessários).
+5. **Atualizar o `README.md`** com o Program Address real e um link de transação real no CookieScan (a URL da aplicação já foi atualizada).
+6. **Abrir o PR com o `apps.json`** no fork do repositório oficial (`cookiechain/superteam-hackathon-submissions`) — rascunho completo em `docs/APPS_JSON_DRAFT.md` (logo e `links.website` já preenchidos); falta só os screenshots reais, que dependem do fluxo funcionando de ponta a ponta.
+7. **Submeter oficialmente**: botão "Submit Now" no listing da Superteam Earn **e** abrir o Pull Request no GitHub (os dois são necessários). Campos reais do formulário confirmados em `docs/SUBMISSION.md` — não existe campo de "pitch" nem "demo"; existe um campo **obrigatório** de "Relevant program, contract, token, or application addresses", o que confirma que o deploy do programa é bloqueador formal de submissão.
 8. **Publicar a X thread** (`docs/X_THREAD.md`) — falta gravar o GIF/vídeo do fluxo completo e preencher os links reais.
 9. **Reler o bounty do zero** no dia da submissão — as regras podem ter mudado.
 
@@ -34,4 +34,6 @@ Custo necessário: ~1,5-2 COOK para o deploy (rent-exemption, medido localmente)
 - README, materiais de pitch (tagline, elevator pitch, 60s, 2min, FAQ para jurados) e rascunho da X thread escritos.
 - Repositório público no GitHub com todo o histórico de GitFlow: https://github.com/Astreus-J/FirstBite
 - Logo 512×512 (`media/logo-512.png`) e favicon do site atualizados para a marca própria (cookie com uma mordida, cores do design system).
-- Rascunho completo da entrada `apps.json` pronto em `docs/APPS_JSON_DRAFT.md` (só falta a URL real e screenshots, que dependem do deploy).
+- Rascunho completo da entrada `apps.json` pronto em `docs/APPS_JSON_DRAFT.md`, schema confirmado contra o repositório oficial real (só faltam os screenshots, que dependem do fluxo funcionando de ponta a ponta).
+- Frontend implantado ao vivo: `https://first-bite-seven.vercel.app/`.
+- Campos reais do formulário "Submit Now" da Superteam Earn confirmados por print (`docs/SUBMISSION.md`).
