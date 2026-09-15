@@ -27,7 +27,7 @@ Tudo o que **não** depende de fundos já está pronto: programa testado (11/11)
 | Código-fonte real no GitHub, com commits do período do hackathon | DONE | https://github.com/Astreus-J/FirstBite (público, todas as branches do GitFlow publicadas, histórico completo desde 2026-09-14) |
 | "Ship something usable, not a landing page or a mockup" | PENDING | Depende do fluxo de claim end-to-end (M4.3) funcionar de verdade |
 | Entrada em `apps.json` com `id`, `title`, `shortDescription`, `description`, `category`, `tags`, `links.website`, `links.github`, `media.logo` (512×512), `team[].name` | PARTIAL | Rascunho pronto em `docs/APPS_JSON_DRAFT.md`; falta `links.website` (depende de M7.2) |
-| Mídia hospedada via `raw.githubusercontent.com` dentro do próprio repositório da submissão (não Imgur/IPFS/host próprio) | PENDING | Atenção na hora de montar o PR |
+| Mídia hospedada via `raw.githubusercontent.com` dentro do próprio repositório da submissão (não Imgur/IPFS/host próprio) | PENDING | Confirmado no README real do repo (2026-09-14): logo vai em `logos/firstbite.png`, screenshots em `screenshots/firstbite/`, dentro do fork — ver `docs/APPS_JSON_DRAFT.md` |
 | Submissão oficial e vinculante via botão "Submit Now" no listing da Superteam Earn (o PR no GitHub cataloga, mas não substitui) | PENDING | Fazer os dois: listing + PR |
 
 ## Itens não informados publicamente — verificar de novo antes de submeter

@@ -1,8 +1,20 @@
 # Rascunho da entrada `apps.json`
 
-Preenchido com tudo que **não** depende do deploy real. `links.website`, `media.screenshots` e a confirmação final de `links.github` ficam `TODO` até a Milestone 7 (deploy) terminar — não inventar URL antes de existir de verdade.
+**FATO CONFIRMADO** (schema real lido diretamente de `cookiechain/superteam-hackathon-submissions` em 2026-09-14, via `raw.githubusercontent.com/.../README.md` e `.../apps.json`): o formato abaixo é o schema real do repositório, não uma suposição. Categorias já em uso no arquivo: `Infrastructure`, `Social`, `Tooling` (nenhum outro projeto usa `firstbite` como `id`).
 
-Repositório de destino do PR: `cookiechain/superteam-hackathon-submissions` (fork → branch → PR, conforme `docs/SUBMISSION.md`). Mídia deve ser hospedada via `raw.githubusercontent.com` dentro do próprio repo da submissão (regra confirmada em `docs/SUBMISSION.md`) — então `media/logo-512.png` deste repositório precisa ser copiado para dentro do fork no momento do PR, não referenciado por URL externa.
+Preenchido com tudo que **não** depende do deploy real. Campos pendentes usam `null`/`[]` — convenção do próprio repo ("null and [] are fine for anything you don't have — leave the key in place rather than omitting it").
+
+## Passos para o PR (confirmados no README do repo oficial)
+
+1. Fork de `cookiechain/superteam-hackathon-submissions`.
+2. Redimensionar o logo para exatamente o que já temos (`media/logo-512.png`, 512×512) e adicioná-lo em `logos/firstbite.png` dentro do fork.
+3. Screenshots (quando existirem, pós-deploy) vão em `screenshots/firstbite/`, numeradas (`01-...png`, `02-...png`).
+4. Acrescentar o objeto abaixo a `apps.json` (append, não substituir o array).
+5. Validar antes de abrir o PR: JSON válido (`jq empty apps.json`), sem `id` duplicado, sem mídia externa (só `raw.githubusercontent.com/cookiechain/superteam-hackathon-submissions/main/...`), todo arquivo referenciado existe de fato.
+6. Abrir PR **com o título do nome do projeto** ("FirstBite").
+7. Isso só cataloga o projeto — a submissão oficial e vinculante continua sendo o botão "Submit Now" no listing da Superteam Earn. Fazer os dois.
+
+## Entrada (JSON)
 
 ```json
 {
@@ -10,25 +22,36 @@ Repositório de destino do PR: `cookiechain/superteam-hackathon-submissions` (fo
   "title": "FirstBite",
   "shortDescription": "Claim your first COOK with a sponsored fee — no bridge needed to start.",
   "description": "FirstBite solves Cookie Chain's cold-start problem: there is no public faucet, so a brand-new wallet can't even pay for its first transaction. A COOK holder creates a \"Bite\" — depositing COOK into an on-chain PDA vault and getting a shareable link/QR — and sends it to someone who has never touched Cookie Chain. That person connects Nightly and claims: a Sponsor Service builds and pays the fee for the claim transaction, so a wallet that starts at genuinely 0 COOK ends the interaction as an active, funded Cookie Chain wallet. Built with Anchor (Rust) and Next.js, with 11/11 program tests passing and two independent security reviews completed.",
-  "category": "Onboarding",
+  "category": "Infrastructure",
   "tags": ["onboarding", "fee-sponsorship", "gasless", "nightly-wallet", "anchor"],
   "links": {
-    "website": "TODO — depende do deploy do frontend (Milestone 7.2)",
-    "github": "https://github.com/Astreus-J/FirstBite"
+    "website": null,
+    "demo": null,
+    "github": "https://github.com/Astreus-J/FirstBite",
+    "x": null,
+    "docs": "https://github.com/Astreus-J/FirstBite/blob/main/README.md",
+    "video": null
   },
   "media": {
-    "logo": "media/logo-512.png",
-    "screenshots": "TODO — capturar contra o app implantado de verdade, não localhost (Milestone 7.2)"
+    "logo": "https://raw.githubusercontent.com/cookiechain/superteam-hackathon-submissions/main/logos/firstbite.png",
+    "banner": null,
+    "screenshots": []
   },
   "team": [
-    { "name": "Jeielsantosdev" }
+    {
+      "name": "Jeielsantosdev",
+      "role": "Developer",
+      "x": null,
+      "github": "https://github.com/Jeielsantosdev"
+    }
   ]
 }
 ```
 
-## Notas
+## O que ainda falta antes de abrir o PR (todos dependem do deploy — Milestone 7)
 
-- `category`: usar `"Onboarding"` — se o repositório oficial tiver uma lista fechada de categorias válidas, conferir e ajustar antes do PR (não verificado ainda; ver `docs/research/HACKATHON.md`).
-- `shortDescription`/`description` reaproveitam a linguagem já validada do `README.md` e `docs/PITCH.md` — não reescrever do zero no PR.
-- `team[].name` usa o handle do GitHub (`Jeielsantosdev`, mesmo autor de todos os commits do repositório — `git log`).
-- Antes de abrir o PR: reler o schema real do `apps.json` no repositório oficial (campos podem ter mudado desde a pesquisa original em `docs/research/HACKATHON.md`) e conferir se `logo` espera um path relativo dentro do fork ou uma URL `raw.githubusercontent.com` completa.
+- `links.website`: obrigatório pelos critérios de revisão do repo ("Have a working public URL, not just a repo") — **não é opcional**, ao contrário do que o rascunho anterior sugeria. Sem isso o PR não passa nos critérios de review.
+- `links.demo`/`links.video`: opcionais, mas `video` é descrito como "the single most useful thing for a reviewer" — vale gravar um GIF/vídeo curto do fluxo criar→reivindicar assim que houver deploy real (pode reaproveitar o roteiro de `docs/PITCH.md`).
+- `media.screenshots`: numeradas, commitadas em `screenshots/firstbite/` no fork, mostrando o app implantado de verdade (não localhost).
+- `links.x`/`team[].x`: opcional — decidir se cria uma conta X do projeto antes de publicar `docs/X_THREAD.md` (esse arquivo já espera um `@handle`).
+- `docs/DECISIONS.md`/`README.md` do projeto real (`Astreus-J/FirstBite`) precisam ter o Program Address e a URL de produção preenchidos antes de linkar aqui — hoje o `links.docs` aponta para um README que ainda tem esses campos como pendentes.
