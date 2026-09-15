@@ -10,7 +10,7 @@ The program is fully built and tested (Anchor program with 11/11 passing tests, 
 
 The only thing blocking a real mainnet deploy is COOK to cover the program's rent-exemption (~1.5-2 COOK, measured directly) and a small amount to fund the sponsor wallet that pays claim fees during the demo (each claim costs ~0.0014 COOK, so even 1-2 COOK covers hundreds of test claims). I saw another submission (Cookie Jar) mention getting a similar test-gas drip from the team — would it be possible to get something similar?
 
-Deploy authority address: `[endereço da sua wallet — a que vai pagar o deploy]`
+Deploy authority address: `DMNxQCK5SgBSv3nanLnSAEYDjGGZLuUYAzJSEVPMnp8C`
 GitHub: https://github.com/Astreus-J/FirstBite
 
 Happy to share more details about the project if useful. Thanks!

@@ -11,7 +11,7 @@ Status: `PASS` / `FAIL` / `NOT APPLICABLE` / `PENDING` (a preencher conforme a i
 3. **Deploy do frontend** (M7.2) — Vercel (ou similar), com `NEXT_PUBLIC_COOKIE_CHAIN_RPC` e `SPONSOR_SECRET_KEY` configurados como variáveis de ambiente de produção.
 4. **Teste manual completo na mainnet real** — repetir o fluxo criar→reivindicar com a Nightly real, agora contra a Cookie Chain de verdade (já validamos o mecanismo localmente e com a extensão real contra validador local; falta só a confirmação final no ambiente de produção).
 5. **Atualizar `README.md`** com o Program Address real, a URL da aplicação ao vivo, e um link de transação real no CookieScan.
-6. **Preencher `apps.json`** (fork do repo oficial `cookiechain/superteam-hackathon-submissions`, PR) — falta o logo 512×512 e screenshots (único item de mídia ainda pendente).
+6. **Abrir o PR com `apps.json`** (fork do repo oficial `cookiechain/superteam-hackathon-submissions`) — rascunho completo em `docs/APPS_JSON_DRAFT.md`, logo pronto (`media/logo-512.png`); falta só `links.website` e screenshots reais, que dependem do deploy.
 7. **Submissão oficial** — botão "Submit Now" no listing da Superteam Earn **e** o PR no GitHub (os dois, não só um).
 8. **Publicar a X thread** (`docs/X_THREAD.md`) — falta gravar o GIF/vídeo do fluxo completo e preencher os links reais.
 9. **Reler o bounty do zero** no dia da submissão (regras podem ter mudado desde 2026-09-14).
@@ -26,7 +26,7 @@ Tudo o que **não** depende de fundos já está pronto: programa testado (11/11)
 | URL pública funcional (não basta o repositório) | PENDING | Depende de M7.2 |
 | Código-fonte real no GitHub, com commits do período do hackathon | DONE | https://github.com/Astreus-J/FirstBite (público, todas as branches do GitFlow publicadas, histórico completo desde 2026-09-14) |
 | "Ship something usable, not a landing page or a mockup" | PENDING | Depende do fluxo de claim end-to-end (M4.3) funcionar de verdade |
-| Entrada em `apps.json` com `id`, `title`, `shortDescription`, `description`, `category`, `tags`, `links.website`, `links.github`, `media.logo` (512×512), `team[].name` | PENDING | Preencher no PR de submissão (M7.4) |
+| Entrada em `apps.json` com `id`, `title`, `shortDescription`, `description`, `category`, `tags`, `links.website`, `links.github`, `media.logo` (512×512), `team[].name` | PARTIAL | Rascunho pronto em `docs/APPS_JSON_DRAFT.md`; falta `links.website` (depende de M7.2) |
 | Mídia hospedada via `raw.githubusercontent.com` dentro do próprio repositório da submissão (não Imgur/IPFS/host próprio) | PENDING | Atenção na hora de montar o PR |
 | Submissão oficial e vinculante via botão "Submit Now" no listing da Superteam Earn (o PR no GitHub cataloga, mas não substitui) | PENDING | Fazer os dois: listing + PR |
 
@@ -49,7 +49,8 @@ Tudo o que **não** depende de fundos já está pronto: programa testado (11/11)
 | FAQ para jurados (objeções antecipadas — base em `docs/research/PITCH_RESEARCH.md`) | DONE — `docs/PITCH.md`, respostas refinadas com o produto real (não mais rascunho) |
 | X thread | DONE (rascunho) — `docs/X_THREAD.md`, faltam apenas GIFs/links/handle antes de publicar |
 | README final (estrutura da Fase 26) | DONE — `README.md` na raiz (program address/live URL marcados pending até M7) |
-| Logo 512×512 e screenshots para `apps.json` | PENDING |
+| Logo 512×512 para `apps.json` | DONE — `media/logo-512.png`, também usado como favicon do site |
+| Screenshots para `apps.json` | PENDING — precisam do app implantado de verdade |
 
 ## Regra de ouro antes de submeter
 
